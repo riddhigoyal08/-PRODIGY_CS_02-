@@ -1,0 +1,57 @@
+# Step 1: Upload Image
+from google.colab import files
+uploaded = files.upload()
+
+# Get the uploaded image path
+image_path = list(uploaded.keys())[0]
+print(f"Uploaded Image Path: {image_path}")
+
+# Step 2: Import Libraries
+import cv2
+import matplotlib.pyplot as plt
+
+# Step 3: Read Image
+image = cv2.imread(image_path)
+
+# Check if image is loaded properly
+if image is None:
+    print("Image not loaded!")
+else:
+    print("Image loaded successfully!")
+
+# Step 4: Show Original Image
+image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+plt.imshow(image_rgb)
+plt.title("Original Image")
+plt.axis('off')
+plt.show()
+
+# Step 5: Encrypt → Swap Red & Blue channels
+encrypted_image = image.copy()
+encrypted_image[:, :, [0, 2]] = encrypted_image[:, :, [2, 0]]  # Swap Blue and Red
+
+# Show Encrypted Image
+encrypted_rgb = cv2.cvtColor(encrypted_image, cv2.COLOR_BGR2RGB)
+plt.imshow(encrypted_rgb)
+plt.title("Encrypted (Swapped) Image")
+plt.axis('off')
+plt.show()
+
+# Save encrypted image
+cv2.imwrite('encrypted_image.png', encrypted_image)
+print("Encrypted image saved as 'encrypted_image.png'")
+
+# Step 6: Decrypt → Swap back
+decrypted_image = encrypted_image.copy()
+decrypted_image[:, :, [0, 2]] = decrypted_image[:, :, [2, 0]]  # Swap back
+
+# Show Decrypted Image
+decrypted_rgb = cv2.cvtColor(decrypted_image, cv2.COLOR_BGR2RGB)
+plt.imshow(decrypted_rgb)
+plt.title("Decrypted Image")
+plt.axis('off')
+plt.show()
+
+# Save decrypted image
+cv2.imwrite('decrypted_image.png', decrypted_image)
+print("Decrypted image saved as 'decrypted_image.png'")
